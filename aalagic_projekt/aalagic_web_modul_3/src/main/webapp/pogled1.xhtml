@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./predlozak.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="naslov">
+        #{p['pogled1.naslov']}
+    </ui:define>
+    <ui:define name="content">
+        <p:spacer height="15"/>
+        <h:outputText styleClass="nazivSadrzaja" value="#{p['pogled1.naslov']}" />
+        <h:form id="forma">
+            <p:spacer height="15"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+            <h:panelGrid id="lokalizacijaPanel" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="#{p['pogled1.odaberiJezik']}:"/><br/>
+                <p:selectOneRadio value="#{lokalizacija.jezik}">
+                    <f:selectItem itemLabel="#{p['pogled1.hrvatski']}" itemValue="hr"/> &nbsp;&nbsp;
+                    <f:selectItem itemLabel="#{p['pogled1.engleski']}" itemValue="en"/> &nbsp;&nbsp;
+                </p:selectOneRadio>
+                <p:spacer height="30"/>
+                <p:commandButton value="#{p['pogled1.odaberiJezik']}" action="#{lokalizacija.odaberiJezik}" ajax="false"/><br/>
+            </h:panelGrid>
+
+            <p:separator/>
+
+            <h:panelGrid id="prijavaPanel" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="#{p['pogled1.korisnickoIme']}: "/>
+                <p:inputText value="#{prijavaKorisnika.korisnickoIme}" />
+
+                <p:outputLabel for="@next" value="#{p['pogled1.lozinka']}: "/>
+                <p:password value="#{prijavaKorisnika.lozinka}" />
+
+                <p:commandButton value="#{p['pogled1.prijava']}" action="#{prijavaKorisnika.prijavaKorisnika()}" ajax="false"/>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

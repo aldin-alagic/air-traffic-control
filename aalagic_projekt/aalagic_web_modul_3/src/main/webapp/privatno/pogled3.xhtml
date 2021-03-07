@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../predlozak.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="naslov">
+        #{p['pogled3.naslov']}
+    </ui:define>
+
+    <ui:define name="js">
+        <script type="text/javascript">
+            var wsocket;
+
+            function connect() {
+                wsocket = new WebSocket("ws://localhost:8084/aalagic_web_modul_1/aerodromi");
+                console.log("Uspostavljena veza");
+                wsocket.onmessage = onMessage;
+            }
+
+            function onMessage(evt) {
+                var odgovor = String(evt.data).split(":");
+                console.log("Odgovor na webu: " + odgovor);
+                console.log(odgovor[1]);
+                document.getElementById("forma:brojPromatranihAerodroma").innerHTML = "Broj promatranih aerodroma: " + odgovor[1];
+                var currentdate = new Date();
+                var vrijemeAzuriranja = "Vrijeme ažuriranje podataka: " + currentdate.getDate() + "."
+                        + (currentdate.getMonth() + 1) + "."
+                        + currentdate.getFullYear() + " | "
+                        + currentdate.getHours() + ":"
+                        + currentdate.getMinutes() + ":"
+                        + currentdate.getSeconds();
+                console.log("Vrijeme: " + vrijemeAzuriranja);
+                document.getElementById("forma:vrijemeAzuriranja").innerHTML = vrijemeAzuriranja;
+            }
+
+            window.addEventListener("load", connect, false);
+        </script>
+
+    </ui:define>
+    <ui:define name="content">
+        <h:outputText styleClass="nazivSadrzaja" value="#{p['pogled3.naslov']}" />
+        <p:separator/>
+        <p:spacer height="10"/>
+        <h:form id="forma">
+            <p:outputLabel styleClass="nazivSadrzaja" id="brojPromatranihAerodroma">#{p['pogled3.brojPromatranihAerodroma']} #{aerodromiP3.brojPromatranihAerodroma} </p:outputLabel><br/>
+            <p:outputLabel styleClass="nazivSadrzaja" id="vrijemeAzuriranja">#{p['pogled3.vrijemeAzuriranja']} #{aerodromiP3.brojPromatranihAerodroma} </p:outputLabel><br/>
+            <p:dataTable id="aerodromiTablica" value="#{aerodromiP3.aerodromi}" var="a" rows="10" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+                         {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,20,50">
+                <p:column>
+                    <f:facet name="header">#{p['pogled3.icao']}</f:facet>#{a.ident.ident}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled3.naziv']}</f:facet>#{a.ident.name}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled3.drzava']}</f:facet>#{a.ident.isoCountry}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled3.brojPromatraca']}</f:facet>#{a.ident.myairportsList.size()}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled3.brojObradenihDana']}</f:facet>#{a.ident.myairportslogList.size()}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled3.brojLetova']}</f:facet>#{a.ident.airplanesList.size()}
+                </p:column>
+                <p:column>
+                    <p:commandButton value=" #{p['pogled3.vise']} "  action="#{aerodromiP3.odaberiAerodrom(a.ident)}" update="forma:panelOdabraniAerodrom"/>
+                </p:column>
+            </p:dataTable>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <h:panelGrid id="panelOdabraniAerodrom" styleClass ="top-aligned-columns" cellpadding="5">
+                <p:outputLabel for="@next" value="#{p['pogled3.odabraniAerodrom']}"/>
+                <p:outputLabel value="#{aerodromiP3.odabraniVlastitiAerodrom}"/>
+                <ul>
+                    <ui:fragment rendered="true"><li>#{p['pogled3.sirina']} #{aerodromiP3.sirina} | #{p['pogled3.duzina']} #{aerodromiP3.duzina}</li></ui:fragment>
+                    <ui:fragment rendered="true"><li>#{p['pogled3.adresa']} #{aerodromiP3.adresa} </li></ui:fragment>
+                    <ui:fragment rendered="true"><li>#{p['pogled3.temperatura']} #{aerodromiP3.meteoPodaci.temperatureValue} #{aerodromiP3.meteoPodaci.temperatureUnit}</li></ui:fragment>
+                    <ui:fragment rendered="true"><li>#{p['pogled3.pritisak']} #{aerodromiP3.meteoPodaci.pressureValue} #{aerodromiP3.meteoPodaci.pressureUnit}</li></ui:fragment>
+                    <ui:fragment rendered="true"><li>#{p['pogled3.vlaznost']} #{aerodromiP3.meteoPodaci.humidityValue} #{aerodromiP3.meteoPodaci.humidityUnit}</li></ui:fragment>
+                </ul>
+            </h:panelGrid>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <h:panelGrid id="panel" styleClass ="top-aligned-columns" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="#{p['pogled3.pretraga']}"/><br/>
+                <p:inputText value="#{aerodromiP3.odabraniNaziv}" />
+                <p:commandButton value=" #{p['pogled3.potrazi']} " action="#{aerodromiP3.dohvatiAerodrome()}" update="forma:aerodromiFiltriraniTablica"/>
+
+                <p:selectOneMenu  autoWidth="true" height="400px" id="aerodromiFiltriraniTablica" value="#{aerodromiP3.odabraniAerodrom}" filter="true" filterMatchMode="contains" >
+                    <f:selectItem itemLabel=" #{p['pogled3.odaberiAerodrom']} " itemValue="" noSelectionOption="true"/>
+                    <f:selectItems value="#{aerodromiP3.aerodromiFiltrirani}" var="a" itemLabel="#{a.ident} #{a.name} #{a.isoCountry}" itemValue="#{a.ident}"  />
+                </p:selectOneMenu>
+                <p:commandButton value=" #{p['pogled3.dodaj']} " action="#{aerodromiP3.dodajAerodrom()}" update="forma:aerodromiTablica"/>
+            </h:panelGrid>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

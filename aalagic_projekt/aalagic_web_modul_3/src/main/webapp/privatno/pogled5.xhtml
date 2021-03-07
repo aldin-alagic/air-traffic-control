@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../predlozak.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="naslov">
+        #{p['pogled5.naslov']}
+    </ui:define>
+
+    <ui:define name="content">
+        <h:outputText styleClass="nazivSadrzaja" value="#{p['pogled5.naslov']}" />
+        <p:separator/>
+        <p:spacer height="10"/>
+        <h:form id="forma">
+
+            <h:panelGrid id="panelAerodromiKorisnika" styleClass ="top-aligned-columns" columns="2" cellpadding="5">
+                <p:outputLabel value="#{p['pogled5.aerodromiKorisnika']}"/><br/>
+                <p:selectOneMenu  id="aerodromiKorisnikaTablica" autoWidth="true" height="400px" value="#{aerodromiP5.odabraniAerodrom}" filter="true" filterMatchMode="contains" >
+                    <f:selectItem itemLabel=" #{p['pogled5.odaberiAerodrom']} " itemValue="" noSelectionOption="true"/>
+                    <f:selectItems value="#{aerodromiP5.aerodromiKorisnika}" var="a" itemLabel="#{a.icao} #{a.naziv} #{a.drzava}" itemValue="#{a.icao}"  />
+                </p:selectOneMenu><br/>
+            </h:panelGrid>
+            <p:commandButton value=" #{p['pogled5.obrisiAerodrom']} " action="#{aerodromiP5.obrisiAerodrom()}" update="forma:panelAerodromiKorisnika forma:panelOdabraniAerodrom poruka"/>
+            <p:commandButton value=" #{p['pogled5.obrisiLetove']} " action="#{aerodromiP5.obrisiLetoveAerodroma()}" update="forma:panelAerodromiKorisnika forma:panelOdabraniAerodrom poruka" />
+            <p:commandButton value=" #{p['pogled5.odaberi']} " action="#{aerodromiP5.odaberiAerodrom()}" update="forma:panelOdabraniAerodrom poruka" />
+
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <h:panelGrid id="panelOdabraniAerodrom" styleClass ="top-aligned-columns" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="#{p['pogled5.odabraniAerodrom']}" />
+                <p:outputLabel value="#{aerodromiP5.odabraniAerodrom}" />
+                <p:outputLabel for="@next" value="#{p['pogled5.min']}" />
+                <p:inputText value="#{aerodromiP5.minUdaljenost}" />
+                <p:outputLabel for="@next" value="#{p['pogled5.max']}" />
+                <p:inputText  value="#{aerodromiP5.maxUdaljenost}" />
+                <p:commandButton value=" #{p['pogled5.potrazi']} " action="#{aerodromiP5.dohvatiAerodromeUdaljenost()}" update="forma:filtriraniAerodromiTablica poruka"/>
+            </h:panelGrid>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <p:outputLabel styleClass="nazivSadrzaja" value="#{p['pogled5.filtriraniAerodromi']}" /><p:spacer/>
+            <p:dataTable id="filtriraniAerodromiTablica" value="#{aerodromiP5.filtriraniAerodromi}" var="a" rows="10" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+                         {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,20,50">
+                <p:column>
+                    <f:facet name="header">#{p['pogled5.icao']}</f:facet>#{a.icao}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled5.naziv']}</f:facet>#{a.naziv}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled5.drzava']}</f:facet>#{a.drzava}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled5.lokacija']}</f:facet>#{a.lokacija.latitude} #{a.lokacija.longitude}
+                </p:column>
+                <p:column>
+                    <p:commandButton value=" #{p['pogled5.odaberi']} "  action="#{aerodromiP5.odaberiAerodromUdaljenost(a.icao)}" update="forma:panelUdaljenostAerodroma"/>
+                </p:column>
+            </p:dataTable>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <h:panelGrid id="panelUdaljenostAerodroma" styleClass ="top-aligned-columns" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="#{p['pogled5.prviAerodrom']}" />
+                <p:outputLabel value="#{aerodromiP5.prviAerodrom}" />
+                <p:outputLabel for="@next" value="#{p['pogled5.drugiAerodrom']}" />
+                <p:outputLabel value="#{aerodromiP5.drugiAerodrom}" />
+                <p:outputLabel for="@next" value="#{p['pogled5.udaljenost']}" />
+                <p:outputLabel value="#{aerodromiP5.udaljenostAerodroma}" />
+                <p:commandButton value=" #{p['pogled5.izracunaj']} " action="#{aerodromiP5.dohvatiUdaljenost()}" update="forma:panelUdaljenostAerodroma poruka"/>
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../predlozak.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="naslov">
+        Upravljanje poslužiteljom
+    </ui:define>
+    <ui:define name="content">
+        <h:outputText styleClass="nazivSadrzaja" value="Upravljanje poslužiteljom" />
+        <h:form id="forma">
+            <p:growl id="poruka" showDetail="true" sticky="true"/>
+
+            <h:panelGrid id="statusPosluziteljPanel" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="Status poslužitelja: "/>
+                <p:outputLabel value="#{prikazPosluzitelja.statusPosluzitelja}" style="font-weight: 1000"/>
+            </h:panelGrid>
+
+            <p:outputLabel for="@next" value="Odaberite opciju:"/><br/>
+            <p:commandButton value=" AKTIVIRAJ " action="#{prikazPosluzitelja.aktivirajPosluzitelja()}" update="forma" />
+            <p:commandButton value=" PAUZIRAJ " action="#{prikazPosluzitelja.pauzirajPosluzitelja()}" update="forma" />
+            <p:commandButton value=" ZAUSTAVI " action="#{prikazPosluzitelja.zaustaviPosluzitelja()}" update="forma" /><br/>
+            <p:separator/>
+
+            <h:panelGrid id="statusGrupaPanel" columns="2" cellpadding="5">
+                <p:outputLabel for="@next" value="Status grupe: "/>
+                <p:outputLabel value="#{prikazPosluzitelja.statusGrupe}" style="font-weight: 1000"/>
+            </h:panelGrid>
+
+            <p:outputLabel for="@next" value="Odaberite opciju:"/><br/>
+            <p:commandButton value=" REGISTRIRAJ " action="#{prikazPosluzitelja.registrirajGrupu()}" update="forma" />
+            <p:commandButton value=" DEREGISTRIRAJ " action="#{prikazPosluzitelja.deregistrirajGrupu()}" update="forma" />
+            <p:commandButton value=" AKTIVIRAJ " action="#{prikazPosluzitelja.aktivirajGrupu()}" update="forma" />
+            <p:commandButton value=" BLOKIRAJ " action="#{prikazPosluzitelja.blokirajGrupu()}" update="forma" />
+            <br/>
+            <p:separator/>
+        </h:form>
+    </ui:define>
+</ui:composition>

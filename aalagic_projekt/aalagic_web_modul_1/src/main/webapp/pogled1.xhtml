@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./predlozak.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                >
+
+    <ui:define name="naslov">
+        Upravljanje korisnicima
+    </ui:define>
+    <ui:define name="content">
+        <h:outputText styleClass="nazivSadrzaja" value="Upravljanje korisnicima" />
+        <h:form id="forma">
+            <p:growl id="poruka" showDetail="true" sticky="true"/>
+
+            <h:panelGrid id="prijavaPanel" columns="2" cellpadding="5" rendered="#{vidljivost.isPrijava()}">
+                <p:outputLabel for="@next" value="Korisničko ime: "/>
+                <p:inputText value="#{prijavaKorisnika.korisnickoIme}" />
+
+                <p:outputLabel for="@next" value="Lozinka: "/>
+                <p:password value="#{prijavaKorisnika.lozinka}" />
+
+                <p:commandButton value=" Prijava " action="#{prijavaKorisnika.prijavaKorisnika()}" update="forma" />
+            </h:panelGrid>
+            <p:separator/>
+
+            <h:panelGrid id="registracijaPanel" columns="2" cellpadding="5" rendered="#{vidljivost.isRegistracija()}">
+                <p:outputLabel for="@next" value="Ime:"/>
+                <p:inputText value="#{registracijaKorisnika.ime}"/>
+
+                <p:outputLabel for="@next" value="Prezime:"/>
+                <p:inputText value="#{registracijaKorisnika.prezime}"/>
+
+                <p:outputLabel for="@next" value="Korisničko ime:"/>
+                <p:inputText value="#{registracijaKorisnika.korisnickoIme}"/>
+
+                <p:outputLabel for="@next" value="E-mail:"/>
+                <p:inputText value="#{registracijaKorisnika.email}"/>
+
+                <p:outputLabel for="@next" value="Lozinka: "/>
+                <p:password value="#{registracijaKorisnika.lozinka}" match="lozinkaPotvrda" feedback="true"
+                            promptLabel="Jačina lozinke" 
+                            weakLabel="Slaba" goodLabel="Srednja" strongLabel="Jaka" />
+
+                <p:outputLabel for="@next" value="Potvrdite lozinku: "/>
+                <p:password id="lozinkaPotvrda" value="#{registracijaKorisnika.lozinkaPotvrda}" />
+
+                <p:commandButton value=" Registracija " action="#{registracijaKorisnika.registrirajKorisnika()}" update="forma" />
+            </h:panelGrid>
+            <p:separator/>
+
+            <h:panelGrid id="korisniciPanel" styleClass ="top-aligned-columns" columns="2" cellpadding="5" rendered="#{vidljivost.isKorisnici()}">
+                <p:dataTable id="korisniciTablica" value="#{prikazKorisnika.korisnici}" var="k" rows="10" paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+                             {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,50">
+                    <p:column>
+                        <f:facet name="header">IME</f:facet>#{k.ime}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">PREZIME</f:facet>#{k.prezime}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">KORISNIČKO IME</f:facet>#{k.korIme}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">BROJ AERODROMA</f:facet>#{k.myairportsList.size()}
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

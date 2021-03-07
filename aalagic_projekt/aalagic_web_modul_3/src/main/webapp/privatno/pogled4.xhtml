@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../predlozak.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="naslov">
+        #{p['pogled4.naslov']}
+    </ui:define>
+
+    <ui:define name="content">
+        <h:outputText styleClass="nazivSadrzaja" value="#{p['pogled4.naslov']}" />
+        <p:separator/>
+        <p:spacer height="10"/>
+        <h:form id="forma">
+            <p:outputLabel styleClass="nazivSadrzaja" value="#{p['pogled4.aerodromiKorisnika']}" /><p:spacer/>
+            <p:dataTable id="aerodromiTablica" value="#{aerodromiP4.aerodromiKorisnika}" var="a" rows="10" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+                         {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,20,50">
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.icao']}</f:facet>#{a.icao}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.naziv']}</f:facet>#{a.naziv}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.drzava']}</f:facet>#{a.drzava}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.lokacija']}</f:facet>#{a.lokacija.latitude} #{a.lokacija.longitude}
+                </p:column>
+                <p:column>
+                    <p:commandButton value=" #{p['pogled4.odaberi']} "  action="#{aerodromiP4.odaberiAerodrom(a.icao)}" update="forma:odabraniAerodrom"/>
+                </p:column>
+            </p:dataTable>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <p:outputLabel id="odabraniAerodrom" styleClass="nazivSadrzaja" value="#{p['pogled4.odabraniAerodrom']} #{aerodromiP4.odabraniAerodrom}" /><br/>
+            <h:panelGrid id="panelOdabraniAerodrom" styleClass ="top-aligned-columns" columns="2" cellpadding="5">
+                <p:outputLabel value="#{p['pogled4.biranjeRaspona']}" /><p:spacer/>
+                <p:outputLabel for="@next" value="#{p['pogled4.vrijemeOd']}" />
+                <p:calendar id="vrijemeDo" value="#{aerodromiP4.vrijemeOd}" pattern="dd.MM.yyyy HH:mm" />
+                <p:outputLabel for="@next" value="#{p['pogled4.vrijemeDo']}" />
+                <p:calendar id="vrijemeOd" value="#{aerodromiP4.vrijemeDo}" pattern="dd.MM.yyyy HH:mm" />
+                <p:commandButton value=" #{p['pogled4.potrazi']} " action="#{aerodromiP4.dohvatiLetoveAerodroma()}" update="forma:letoviAerodromaTablica poruka"/>
+            </h:panelGrid>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <p:outputLabel styleClass="nazivSadrzaja" value="#{p['pogled4.letoviAerodroma']}" /><p:spacer/>
+            <p:dataTable id="letoviAerodromaTablica" styleClass="nazivSadrzaja" value="#{aerodromiP4.letoviAerodroma}" var="l" rows="10" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+                         {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,20,50">
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.icao24']}</f:facet>#{l.icao24}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.nazivAviona']}</f:facet>#{l.callsign}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.vrijemePolijetanja']}</f:facet>#{aerodromiP4.dohvatiVrijeme(l.firstSeen)}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.vrijemeSlijetanja']}</f:facet>#{aerodromiP4.dohvatiVrijeme(l.lastSeen)}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.aerodromSlijetanja']}</f:facet>#{l.estArrivalAirport}
+                </p:column>
+                <p:column>
+                    <p:commandButton value=" #{p['pogled4.odaberi']} "  action="#{aerodromiP4.odaberiAvion(l.icao24)}" update="forma:odabraniAvion"/>
+                </p:column>
+            </p:dataTable>
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <p:outputLabel id="odabraniAvion" styleClass="nazivSadrzaja" value="#{p['pogled4.odabraniAvion']} #{aerodromiP4.odabraniAvion}" /><br/>
+            <h:panelGrid id="panelOdabraniAvion" styleClass ="top-aligned-columns" columns="2" cellpadding="5">
+                <p:outputLabel value="#{p['pogled4.biranjeRaspona']}" /><p:spacer/>
+                <p:outputLabel for="@next" value="#{p['pogled4.vrijemeOd']}" />
+                <p:calendar id="vrijemeDoAvion" value="#{aerodromiP4.vrijemeOdAvion}" pattern="dd.MM.yyyy HH:mm" />
+                <p:outputLabel for="@next" value="#{p['pogled4.vrijemeDo']}" />
+                <p:calendar id="vrijemeOdAvion" value="#{aerodromiP4.vrijemeDoAvion}" pattern="dd.MM.yyyy HH:mm" />
+                <p:commandButton value=" #{p['pogled4.potrazi']} " action="#{aerodromiP4.dohvatiLetoveAviona()}" update="forma:letoviAvionaTablica poruka"/>
+            </h:panelGrid>
+
+
+            <p:spacer height="10"/>
+            <p:separator/>
+            <p:spacer height="10"/>
+
+            <p:outputLabel styleClass="nazivSadrzaja" value="#{p['pogled4.letoviAviona']}" /><p:spacer/>
+            <p:dataTable id="letoviAvionaTablica" styleClass="nazivSadrzaja" value="#{aerodromiP4.letoviAviona}" var="l" rows="10" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} 
+                         {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,20,50">
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.icao24']}</f:facet>#{l.icao24}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.nazivAviona']}</f:facet>#{l.callsign}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.vrijemePolijetanja']}</f:facet>#{aerodromiP4.dohvatiVrijeme(l.firstSeen)}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['pogled4.vrijemeSlijetanja']}</f:facet>#{aerodromiP4.dohvatiVrijeme(l.lastSeen)}
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
